@@ -1,0 +1,83 @@
+#Installing and usage of the ClickButton library
+
+= Installing =
+
+For Arduino 0017 onwards, just extract the contents of the archive into the "libraries" folder located in the sketchbook folder.
+
+
+= Syntax =
+{{{
+ClickButton buttonObject(pin [,active [,CLICK_PULLUP]]);
+}}}
+
+where:
+ * pin is the pin connected to the button
+ * active denotes an active LOW or HIGH button (default is LOW)
+ * CLICK_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
+
+== Returned click codes: ==
+Generally:
+
+ * A negative numbers indicate a released button, the absolute value is the number of clicks.
+ * A positive number is a button still held down, and also the click-count.
+ * A positive number bigger than 3 (for now, this is the max clicks in this library), indicates a button held down for longer than 1 second. Number of clicks for the hold is obtainable by subtracting 3 (or, CLICK_MAX_BUTTON_PRESSES).
+
+Specifically:
+
+ * -3 = CLICK_TRIPLECLICKED - tripleclicked (after release of button)
+ * -2 = CLICK_DOUBLECLICKED - doubleclicked (after release of button)
+ * -1 = CLICK_SINGLECLICKED - singleclicked (after release of button)
+ *  0 - unused (initial value)
+ *  1 = CLICK_SINGLECLICK - single click, while it is pressed down
+ *  2 = CLICK_DOUBLECLICK - doubleclick, while the second click is pressed down
+ *  3 = CLICK_TRIPLECLICK - tripleclick, same as above just third press of the button
+ *  4 = CLICK_SINGLEHOLD - Single click-and-hold (Simply holding the button down more than CLICK_HELDDOWN_DELAY milliseconds)
+ *  5 = CLICK_DOUBLEHOLD - doubleclick-and-hold  (one click then another press-and-hold down quickly afterwards)
+ *  6 = CLICK_TRIPLEHOLD - tripleclick-and-hold  (doubleclick then another press-and-hold down quickly afterwards)
+
+Unless CLICK_MAX_BUTTON_PRESSES is redifined as something else than 3.
+
+
+*Note* It will _still_ return the last click code used, if no new button clicks are detected. One would have to cope for this in the code (IE by storing the last returned click code and compare).
+
+= Usage =
+
+Example using an active-low button, and using the internal pull-up resistor of the atmega chip:
+
+{{{
+#include "ClickButton.h"
+
+// the Button
+const int buttonPin = 2;
+ClickButton button(buttonPin, LOW, CLICK_PULLUP);
+}}}
+
+Then, at a point in the loop, the button needs to be called to update whats happening to it:
+
+{{{
+void loop()
+{
+  // update button state
+  // Note: Will return the last click decoded, even if no new clicks are received!
+  button.Update();
+.
+.
+.
+}}}
+
+To find out what what kind of click it has decoded so far, check its ".click" value.
+
+*Note* A single-click might be part of a double- or triple-click, so it will first go through the single click and return that code for pressed down (1), then for released single click (-1), then double click pressed-down code (2), then released (-2), and so on, if those happens within the 250 ms timelimit from the first click.
+
+{{{
+  if(button.click == CLICK_SINGLECLICK && button.click != lastClickCode) do something
+}}}
+
+For the case of a single click, one should compare with the last value of itself to avoid it repeating the condition every time (presumably not wanted).
+End of loop:
+{{{
+
+  // Save previous button click code
+  lastClickCode = button.click;
+}
+}}}
