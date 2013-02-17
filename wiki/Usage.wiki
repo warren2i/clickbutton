@@ -12,6 +12,7 @@ ClickButton buttonObject(pin [,active [,CLICKBTN_PULLUP]]);
 }}}
 
 where:
+ * buttonObject is your name for the button object in code.
  * pin is the pin connected to the button
  * active denotes an active LOW or HIGH button (default is LOW)
  * CLICKBTN_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
@@ -29,19 +30,44 @@ Note that the click code is lost shortly after the button is released and the Up
 
 
 == Public variables / members ==
+Note the "buttonObject" is just a placeholder for the object name you use, of course.
 
-{{{buttonObject.depressed}}} - the currently debounced button (press) state
-{{{buttonObject.maxPresses}}} - Max nr. of multiclicks allowable
-{{{buttonObject.debounceTime}}} - Sets the time limit for ignoring button bounces
-{{{buttonObject.multiclickTime}}} - Sets / gets the time limit for multiple clicks
-{{{buttonObject.heldDownTime}}} - Sets the time limit for a "held-down" button event. 
+=== .depressed ===
+{{{buttonObject.depressed}}}
+
+Returns the currently debounced button (press) state.
+
+=== .maxPresses ===
+{{{buttonObject.maxPresses}}}
+
+Just a setting to set the max nr. of multiclicks allowable. Perhaps not needed, but there it is for the moment.
 
 
+=== .debounceTime ===
+{{{buttonObject.debounceTime}}}
+
+Sets / gets the time limit for ignoring button bounces. If multiple clicks / signals are received within this time limit, they are ignored (So, do not set this too high or too similar to multiclickTime. Also, do not double-click faster than this)
+
+=== .multiclickTime ===
+{{{buttonObject.multiclickTime}}}
+Sets / gets the time limit for multiple clicks
+
+If you want to do multiple clicks (like a double click), you must do it within this time limit.
+
+
+=== .heldDownTime ===
+{{{buttonObject.heldDownTime}}}
+
+Sets / gets the time limit for a "held-down" button event.
+
+If you hold down the button this long, the returned click code will be negative (indicating a held-down), and the absolute nr. is the number of clicks right before and including the button press.
+
+=== .click ===
 {{{buttonObject.click}}}
 
-Click code depending on button presses / clicks
+Click code depending on button presses / clicks. This is updated on every .Update() call, and might be erased depending on the time of update and release of button. You might need to save this value (See example code below).
 
-=== Returned click codes: ===
+==== Returned click codes: ====
 
  * A positive numbers returns the number of clicks, after a released button
  * A negative number also returns the number of clicks, but after the button is held down for a time (default 1 second).
