@@ -5,6 +5,7 @@
 
 For Arduino 0017 onwards, just extract the contents of the archive into the "libraries" folder located in the sketchbook folder.
 
+----
 
 = Syntax =
 {{{
@@ -16,6 +17,11 @@ where:
  * pin is the pin connected to the button
  * active denotes an active LOW or HIGH button (default is LOW)
  * CLICKBTN_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
+
+
+
+----
+
 
 
 == Functions ==
@@ -32,49 +38,73 @@ Note that the click code is lost shortly after the button is released and the Up
 == Public variables / members ==
 Note the "buttonObject" is just a placeholder for the object name you use, of course.
 
-=== .depressed ===
-{{{buttonObject.depressed}}}
-
-Returns the currently debounced button (press) state.
-
-=== .maxPresses ===
-{{{buttonObject.maxPresses}}}
-
-Just a setting to set the max nr. of multiclicks allowable. Perhaps not needed, but there it is for the moment.
-
-
-=== .debounceTime ===
-{{{buttonObject.debounceTime}}}
-
-Sets / gets the time limit for ignoring button bounces. If multiple clicks / signals are received within this time limit, they are ignored (So, do not set this too high or too similar to multiclickTime. Also, do not double-click faster than this)
-
-=== .multiclickTime ===
-{{{buttonObject.multiclickTime}}}
-Sets / gets the time limit for multiple clicks
-
-If you want to do multiple clicks (like a double click), you must do it within this time limit.
-
-
-=== .heldDownTime ===
-{{{buttonObject.heldDownTime}}}
-
-Sets / gets the time limit for a "held-down" button event.
-
-If you hold down the button this long, the returned click code will be negative (indicating a held-down), and the absolute nr. is the number of clicks right before and including the button press.
 
 === .click ===
-{{{buttonObject.click}}}
+Returns the button "click code", depending on button presses / clicks.
 
-Click code depending on button presses / clicks. This is updated on every .Update() call, and might be erased depending on the time of update and release of button. You might need to save this value (See example code below).
+This is updated on every _buttonObject.Update()_ call, and will be erased some time after the button is released (depending on the time of the update and release of the button). You might need to save this value (See example code at the bottom of page).
+
+{{{saveClick = buttonObject.click}}}
+
+
 
 ==== Returned click codes: ====
 
- * A positive numbers returns the number of clicks, after a released button
- * A negative number also returns the number of clicks, but after the button is held down for a time (default 1 second).
+ * A positive number returns the number of clicks, after a released button
+ * A negative number returns the (negative) number of clicks, but after the button is held down for a time (default 1 second).
 
 *Note* These clickcodes are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the immediate held-down click-counts.
 
-Another *opposite* is that the returned click codes are now basically reset between button update() calls (depending on the button clicks and time of reading them), but one should still save the click codes received. See examples.
+Another *opposite* is that the returned click codes are now basically reset between button update() calls.
+
+
+
+=== .depressed ===
+Returns the currently debounced button (press) state.
+
+ * true = button is pressed down
+ * false = button is not pressed down.
+
+This value is independent of button logic (active high or low).
+
+{{{if (buttonObject.depressed == true) then whatever}}}
+
+
+
+=== .maxPresses ===
+Just a setting to set the max nr. of multiclicks allowable. Perhaps not needed, but there it is for the moment.
+
+Default is 3, but you may change it to what you need.
+
+{{{buttonObject.maxPresses = 4}}}
+
+
+=== .debounceTime ===
+Sets / gets the time limit for ignoring button bounces.
+
+If multiple clicks / signals are received within this time limit, they are ignored (So, do not set this too high or too similar to multiclickTime. Also, do not double-click faster than this :P)
+
+{{{buttonObject.debounceTime = 20;   // debounce time set to 20 milliseconds}}}
+
+
+
+=== .multiclickTime ===
+Sets / gets the time limit for multiple clicks
+
+If you want to do multiple clicks (like a double click), you must do it within this time limit. Default is set to 250 ms (0.25 seconds).
+
+{{{buttonObject.multiclickTime = 250;}}}
+
+
+
+=== .heldDownTime ===
+Sets / gets the time limit for a "held-down" button event.
+
+If you hold down the button for this time, the returned click code will be negative (indicating a held-down), and the absolute nr. is the number of clicks right before and including the button press. Default is set to 1 second.
+
+{{{buttonObject.heldDownTime = 1000;  // Sets held-down time to 1 second}}}
+
+----
 
 
 = Example =
