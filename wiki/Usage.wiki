@@ -1,3 +1,4 @@
+#labels Featured,Phase-Implementation
 #Installing and usage of the ClickButton library
 
 = Installing =
@@ -7,77 +8,94 @@ For Arduino 0017 onwards, just extract the contents of the archive into the "lib
 
 = Syntax =
 {{{
-ClickButton buttonObject(pin [,active [,CLICK_PULLUP]]);
+ClickButton buttonObject(pin [,active [,CLICKBTN_PULLUP]]);
 }}}
 
 where:
  * pin is the pin connected to the button
  * active denotes an active LOW or HIGH button (default is LOW)
- * CLICK_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
+ * CLICKBTN_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
 
 == Returned click codes: ==
-Generally:
 
- * A negative numbers indicate a released button, the absolute value is the number of clicks.
- * A positive number is a button still held down, and also the click-count.
- * A positive number bigger than 3 (for now, this is the max clicks in this library), indicates a button held down for longer than 1 second. Number of clicks for the hold is obtainable by subtracting 3 (or, CLICK_MAX_BUTTON_PRESSES).
+ * A positive numbers returns the number of clicks, after a released button
+ * A negative number also returns the number of clicks, but after the button is held down for a time (default 1 second).
 
-Specifically:
+The max number of button clicks can be set via the member "maxPresses" (defaults to 3).
 
- * -3 = CLICK_TRIPLECLICKED - tripleclicked (after release of button)
- * -2 = CLICK_DOUBLECLICKED - doubleclicked (after release of button)
- * -1 = CLICK_SINGLECLICKED - singleclicked (after release of button)
- *  0 - unused (initial value)
- *  1 = CLICK_SINGLECLICK - single click, while it is pressed down
- *  2 = CLICK_DOUBLECLICK - doubleclick, while the second click is pressed down
- *  3 = CLICK_TRIPLECLICK - tripleclick, same as above just third press of the button
- *  4 = CLICK_SINGLEHOLD - Single click-and-hold (Simply holding the button down more than CLICK_HELDDOWN_DELAY milliseconds)
- *  5 = CLICK_DOUBLEHOLD - doubleclick-and-hold  (one click then another press-and-hold down quickly afterwards)
- *  6 = CLICK_TRIPLEHOLD - tripleclick-and-hold  (doubleclick then another press-and-hold down quickly afterwards)
+*Note* These clickcodes are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the immediate held-down click-counts.
 
-Unless CLICK_MAX_BUTTON_PRESSES is redifined as something else than 3.
+Another *opposite* is that the returned click codes are now basically reset between button update() calls (depending on the button clicks), so one should still save the click codes received. See examples.
 
-
-*Note* It will _still_ return the last click code used, if no new button clicks are detected. One would have to cope for this in the code (IE by storing the last returned click code and compare).
 
 = Usage =
+
+This example is included in the library, as well as another one.
 
 Example using an active-low button, and using the internal pull-up resistor of the atmega chip:
 
 {{{
+
 #include "ClickButton.h"
 
+// the LED
+const int ledPin = 10;
+int ledState = 0;
+
 // the Button
-const int buttonPin = 2;
-ClickButton button(buttonPin, LOW, CLICK_PULLUP);
-}}}
+const int buttonPin1 = 4;
+ClickButton button1(buttonPin1, LOW, CLICKBTN_PULLUP);
 
-Then, at a point in the loop, the button needs to be called to update whats happening to it:
+// Arbitrary LED function 
+int LEDfunction = 0;
 
-{{{
+
+void setup()
+{
+  pinMode(ledPin,OUTPUT);  
+
+  // Setup button timers (all in milliseconds / ms)
+  // (These are default if not set, but changeable for convenience)
+  button1.maxPresses     = 3;    // max button multiclick count
+  button1.debounceTime   = 20;   // Debounce timer in ms
+  button1.multiclickTime = 250;  // Time limit for multi clicks
+  button1.heldDownTime   = 1000; // time until "held-down clicks" register
+}
+
+
 void loop()
 {
-  // update button state
-  // Note: Will return the last click decoded, even if no new clicks are received!
-  button.Update();
-.
-.
-.
-}}}
+  // Update button state
+  button1.Update();
 
-To find out what what kind of click it has decoded so far, check its ".click" value.
+  // Save click codes in LEDfunction, as click codes are reset at next Update()
+  if (button1.click != 0) LEDfunction = button1.click;
+  
 
-*Note* A single-click might be part of a double- or triple-click, so it will first go through the single click and return that code for pressed down (1), then for released single click (-1), then double click pressed-down code (2), then released (-2), and so on, if those happens within the 250 ms timelimit from the first click.
+  // Simply toggle LED on single clicks
+  // (Cant use LEDfunction like the others here,
+  //  as it would toggle on and off all the time)
+  if(button1.click == 1) ledState = !ledState;
 
-{{{
-  if(button.click == CLICK_SINGLECLICK && button.click != lastClickCode) do something
-}}}
+  // blink faster if double clicked
+  if(LEDfunction == 2) ledState = (millis()/500)%2;
 
-For the case of a single click, one should compare with the last value of itself to avoid it repeating the condition every time (presumably not wanted).
-End of loop:
-{{{
+  // blink even faster if triple clicked
+  if(LEDfunction == 3) ledState = (millis()/200)%2;
 
-  // Save previous button click code
-  lastClickCode = button.click;
+  // slow blink (must hold down button. 1 second long blinks)
+  if(LEDfunction == -1) ledState = (millis()/1000)%2;
+
+  // slower blink (must hold down button. 2 second loong blinks)
+  if(LEDfunction == -2) ledState = (millis()/2000)%2;
+
+  // even slower blink (must hold down button. 3 second looong blinks)
+  if(LEDfunction == -3) ledState = (millis()/3000)%2;
+
+
+  // update the LED
+  digitalWrite(ledPin,ledState);
+
 }
+
 }}}
