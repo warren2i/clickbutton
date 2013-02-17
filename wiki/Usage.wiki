@@ -16,23 +16,46 @@ where:
  * active denotes an active LOW or HIGH button (default is LOW)
  * CLICKBTN_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
 
-== Returned click codes: ==
+
+== Functions ==
+
+Only one function:
+
+{{{buttonObject.Update();}}}
+
+Which reads the button, and updates it's click codes. This should basically be read once each main program loop.
+
+Note that the click code is lost shortly after the button is released and the Update() function is called.
+
+
+== Public variables / members ==
+
+{{{buttonObject.depressed}}} - the currently debounced button (press) state
+{{{buttonObject.maxPresses}}} - Max nr. of multiclicks allowable
+{{{buttonObject.debounceTime}}} - Sets the time limit for ignoring button bounces
+{{{buttonObject.multiclickTime}}} - Sets / gets the time limit for multiple clicks
+{{{buttonObject.heldDownTime}}} - Sets the time limit for a "held-down" button event. 
+
+
+{{{buttonObject.click}}}
+
+Click code depending on button presses / clicks
+
+=== Returned click codes: ===
 
  * A positive numbers returns the number of clicks, after a released button
  * A negative number also returns the number of clicks, but after the button is held down for a time (default 1 second).
 
-The max number of button clicks can be set via the member "maxPresses" (defaults to 3).
-
 *Note* These clickcodes are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the immediate held-down click-counts.
 
-Another *opposite* is that the returned click codes are now basically reset between button update() calls (depending on the button clicks), so one should still save the click codes received. See examples.
+Another *opposite* is that the returned click codes are now basically reset between button update() calls (depending on the button clicks and time of reading them), but one should still save the click codes received. See examples.
 
 
-= Usage =
+= Example =
 
 This example is included in the library, as well as another one.
 
-Example using an active-low button, and using the internal pull-up resistor of the atmega chip:
+Using an active-low button, and using the internal pull-up resistor of the atmega chip:
 
 {{{
 
