@@ -3,7 +3,7 @@
 
 = Installing =
 
-For Arduino 0017 onwards, just extract the contents of the archive into the "libraries" folder located in the sketchbook folder.
+For Arduino 0017 onwards, just extract the contents of the archive into the "libraries" folder located in your sketchbook folder.
 
 ----
 
@@ -42,18 +42,17 @@ Note the "buttonObject" is just a placeholder for the object name you use, of co
 === .click ===
 Returns the button click count.
 
-This is updated on every _buttonObject.Update()_ call, and will be reset to zero after the button is released (depending on the time of the update and release of the button). You probably need to save this value (See example code at the bottom of page).
+This is updated on every _buttonObject.Update()_ call, and will be reset to zero after the button is released.
+You probably need to save this value (See example code at the bottom of page).
 
 {{{savedClick = buttonObject.click}}}
-
-A "long" click (or "click-and-hold"), is denoted by a negative number, whos absolute value is the number of clicks (including the last button hold-down). The preceding clicks counted are short clicks, only the last click is held down for at least "heldDownTime" milliseconds.
-
-
 
 ==== Returned click counts : ====
 
  * A positive number returns the number of short clicks.
- * A negative number indicates a long click, whos absolute value is the total number of clicks, possibly including short clicks preceding the long click.
+ * A negative number indicates a long click (or click-and-hold).
+
+A "long" click's returned absolute value is the number of clicks (including the last button hold-down). The preceding clicks counted are short clicks, only the last click is held down for a longer time.
 
 *Note* These values are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the "immediate" held-down click-count. Thus it takes at least "multiclickTime" milliseconds before a new click count is registered (default 0.25 seconds).
 
