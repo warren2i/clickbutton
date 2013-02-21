@@ -40,22 +40,24 @@ Note the "buttonObject" is just a placeholder for the object name you use, of co
 
 
 === .click ===
-Returns the button "click code", depending on button presses / clicks.
+Returns the button click count.
 
-This is updated on every _buttonObject.Update()_ call, and will be erased some time after the button is released (depending on the time of the update and release of the button). You might need to save this value (See example code at the bottom of page).
+This is updated on every _buttonObject.Update()_ call, and will be reset to zero after the button is released (depending on the time of the update and release of the button). You probably need to save this value (See example code at the bottom of page).
 
-{{{saveClick = buttonObject.click}}}
+{{{savedClick = buttonObject.click}}}
+
+A "long" click (or "click-and-hold"), is denoted by a negative number, whos absolute value is the number of clicks (including the last button hold-down). The preceding clicks counted are short clicks, only the last click is held down for at least "heldDownTime" milliseconds.
 
 
 
-==== Returned click codes: ====
+==== Returned click counts : ====
 
- * A positive number returns the number of clicks, after a released button
- * A negative number returns the (negative) number of clicks, but after the button is held down for a time (default 1 second).
+ * A positive number returns the number of short clicks.
+ * A negative number indicates a long click, whos absolute value is the total number of clicks, possibly including short clicks preceding the long click.
 
-*Note* These clickcodes are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the immediate held-down click-counts.
+*Note* These values are *opposite* of the previous versions. I changed them since I thought it made more sense, and since I removed the "immediate" held-down click-count. Thus it takes at least "multiclickTime" milliseconds before a new click count is registered (default 0.25 seconds).
 
-Another *opposite* is that the returned click codes are now basically reset between button update() calls.
+Another *opposite* is that the returned click count are now reset between button clicks.
 
 
 
@@ -67,7 +69,9 @@ Returns the currently debounced button (press) state.
 
 This value is independent of button logic (active high or low).
 
-{{{if (buttonObject.depressed == true) then whatever}}}
+Intended use is to check if a button is still held down after a long click, if needed. But it also serves as an immediate, debounced button state.
+
+{{{if (savedClick == -1 && buttonObject.depressed == true) then its-still-held-down}}}
 
 
 
@@ -98,9 +102,11 @@ If you want to do multiple clicks (like a double click), you must do it within t
 
 
 === .heldDownTime ===
-Sets / gets the time limit for a "held-down" button event.
+Sets / gets the time limit for a "long" click (holding down the button for a time).
 
-If you hold down the button for this time, the returned click code will be negative (indicating a held-down), and the absolute nr. is the number of clicks right before and including the button press. Default is set to 1 second.
+The returned click count will be negative (indicating a long click), and the absolute nr. is the number of short clicks right before and including the long button press. 
+
+Default "long" held-down time is set to 1 second.
 
 {{{buttonObject.heldDownTime = 1000;  // Sets held-down time to 1 second}}}
 
@@ -108,12 +114,37 @@ If you hold down the button for this time, the returned click code will be negat
 
 
 = Example =
-
-This example is included in the library, as well as another one.
+This example is one of two included with the library.
 
 Using an active-low button, and using the internal pull-up resistor of the atmega chip:
 
 {{{
+/* ClickButton library demo
+
+  Blinks a LED according to different clicks on one button:
+
+    Single click - Toggle LED on/off
+    Double click - Blink      (Toggles LED 2 times/second)
+    Triple click - Fast blink (Toggles LED 5 times/second)
+    
+    Click-and-hold functions (hold button for one second or longer):
+    
+    Single-click held down - Slow blink   (Toggles LED every second)
+    Double-click held down - Sloow blink  (Toggles LED every other second)
+    Triple-click held down - Slooow blink (Toggles LED every three seconds)
+
+
+  The circuit:
+  - LED attached from pin 10 to resistor (say 220-ish ohms), other side of resistor to GND (ground)
+  - pushbutton attached from pin 4 to GND
+  No pullup resistor needed, using the Arduino's (Atmega's) internal pullup resistor in this example.
+
+  Based on the Arduino Debounce example.
+
+  2010, 2013 raron
+ 
+ GNU GPLv3 license
+*/
 
 #include "ClickButton.h"
 
