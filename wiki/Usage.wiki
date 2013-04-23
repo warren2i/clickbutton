@@ -66,11 +66,12 @@ savedClick = buttonObject.click
 A "click-and-hold" can be determined simply by a "long" click and checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
 
 
-*NOTE: Changes from previous versions:*
+*NOTE: Changes from previous versions (before 2013.04.17):*
 
  * The click count value are "opposite" (*negative*) from the previous versions. I changed it since I thought it made more sense.
  * Also removed the old version of "immediate held-down click-count".
   * Thus it reacts a bit slower and it takes at least _.multiclickTime_ milliseconds before a new click count is registered (default 0.25 seconds).
+  * Instead a public variable named "depressed" returns the debounced depressed state (true = depressed, false = not depressed).
  * Another opposite is that the returned click count are now reset between button clicks.
  * Removed the named constants for double clicks etc, as it now is simply the numerical (absolute) value.
 
