@@ -139,25 +139,24 @@ buttonObject.heldDownTime = 1000;  // Sets held-down time to 1 second
 
 
 = Example =
-This example is one of two included with the library (Except I changed the header comment a bit here - probably to be updated in source later).
-
-Using an active-low button, and using the internal pull-up resistor of the atmega chip:
+This example is one of two included with the library. Using an active-low button, and using the internal pull-up resistor of the atmega chip.
 
 {{{
 /* ClickButton library demo
 
-  Blinks a LED according to different clicks on one button:
+  Blinks a LED according to different clicks on one button.
+  
+  Short clicks:
 
     Single click - Toggle LED on/off
     Double click - Blink      (Toggles LED 2 times/second)
     Triple click - Fast blink (Toggles LED 5 times/second)
     
-    Long click functions:
-    (For the last click hold button for one second or longer)
+  Long clicks (hold button for one second or longer on last click):
     
-    Single long click - Slow blink   (Toggles LED every second)
-    Double long click - Sloow blink  (Toggles LED every other second)
-    Triple long click - Slooow blink (Toggles LED every three seconds)
+    Single-click - Slow blink   (Toggles LED every second)
+    Double-click - Sloow blink  (Toggles LED every other second)
+    Triple-click - Slooow blink (Toggles LED every three seconds)
 
 
   The circuit:
@@ -233,5 +232,4 @@ void loop()
   digitalWrite(ledPin,ledState);
 
 }
-
 }}}
