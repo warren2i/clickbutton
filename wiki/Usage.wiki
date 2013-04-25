@@ -47,10 +47,10 @@ Note that the click count is lost after the button is released and the Update() 
 Returns the button click count.
 
 This is updated on every _buttonObject.Update()_ call, and will be reset to zero after the button is released.
-You probably need to save this value (See example code at the bottom of page).
+You probably need to save this value for later (See example code at the bottom of page).
 
 {{{
-savedClick = buttonObject.click
+buttonClicks = buttonObject.click
 }}}
 
 
@@ -69,9 +69,9 @@ A "click-and-hold" can be determined simply by a "long" click and checking that 
 *NOTE: Changes from previous versions (before 2013.02.17):*
 
  * The click count value are "opposite" (*negative*) from the previous versions. I changed it since I thought it made more sense.
- * Also removed the old version of "immediate held-down click-count".
+ * Also removed the old version of "immediate held-down click-count" (which made a mess of things imho)
   * Thus it reacts a bit slower and it takes at least _.multiclickTime_ milliseconds before a new click count is registered (default 0.25 seconds).
-  * Instead a public variable named "depressed" returns the debounced depressed state (true = depressed, false = not depressed).
+  * Instead a public variable named "depressed" returns the immediate debounced depressed state of the button (true = depressed, false = not depressed).
  * Another opposite is that the returned click count are now reset between button clicks.
  * Removed the named constants for double clicks etc, as it now is simply the numerical (absolute) value.
 
@@ -125,11 +125,11 @@ buttonObject.multiclickTime = 250;
 
 
 == .heldDownTime ==
-Sets / gets the time limit for a "long" click (holding down the button for a time).
+Sets / gets the time limit for a "long click" (holding down the button for an extended time).
 
 The returned click count will be negative (indicating a long click), and the absolute nr. is the number of short clicks right before and including the long button press. 
 
-Default "long" held-down time is set to 1 second.
+Default "long click" held-down time is set to 1 second.
 
 {{{
 buttonObject.heldDownTime = 1000;  // Sets held-down time to 1 second
