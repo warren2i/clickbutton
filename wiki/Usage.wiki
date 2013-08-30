@@ -100,9 +100,11 @@ buttonObject.debounceTime = 20;   // debounce time set to 20 milliseconds
 
 
 == .multiclickTime ==
-Sets / gets the time limit for multiple clicks
+Sets / gets the time limit for clicks.
 
 If you want to do multiple clicks (like a double click), you must do it within this time limit. Default is set to 250 ms (0.25 seconds).
+
+This also goes for single clicks, so this will be the delay determining when the single (or multiple) clicks are registered.
 
 {{{
 buttonObject.multiclickTime = 250;
