@@ -29,12 +29,13 @@ where:
 = Functions =
 (Note the _buttonObject_ is just a placeholder for the object name you use, of course)
 
-Only one function:
+== Update() ==
+The only function.
+Type: void (returns nothing).
 
 {{{
 buttonObject.Update();
 }}}
-Type: void (returns nothing).
 
 Reads the button, debounces it, and updates it's click count.
 This should basically be read once each main program loop.
