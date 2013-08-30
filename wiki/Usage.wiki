@@ -83,7 +83,7 @@ This value is independent of button logic (active high or low).
 Intended use is for a "click-and-hold" function, by checking if a button is still held down after a long click. But it also serves as an immediate, debounced button state.
 
 {{{
-if (savedClick == -1 && buttonObject.depressed == true) then its-still-held-down;
+if (buttonClicks == -1 && buttonObject.depressed == true) then its-still-held-down;
 }}}
 
 
