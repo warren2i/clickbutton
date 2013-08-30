@@ -10,6 +10,7 @@ For Arduino 0017 onwards, just extract the contents of the archive into the "lib
 ----
 
 = Syntax =
+To instantiate a ClickButton object named _buttonObject_
 {{{
 ClickButton buttonObject(pin [,active [,CLICKBTN_PULLUP]]);
 }}}
@@ -27,10 +28,11 @@ where:
 
 
 = Functions =
-(Note the _buttonObject_ is just a placeholder for the object name you use, of course)
+(Note the _buttonObject_ is just a placeholder for any object name you use, of course)
 
 == Update() ==
 The only function.
+
 Type: void (returns nothing).
 
 {{{
