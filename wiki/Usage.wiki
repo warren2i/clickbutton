@@ -22,6 +22,13 @@ where:
  * CLICKBTN_PULLUP turns on the internal pullup resistor. This is only possible with active low buttons.
 
 
+----
+
+= Avoid using delay()! =
+
+It stops everything (except interrupts) that the Arduino does. Then the button timings may (most likely) gets messed up and will the library will not work as intended.
+
+Instead, have a look at [http://arduino.cc/en/Tutorial/BlinkWithoutDelay Blink without delay] and [http://playground.arduino.cc/Code/AvoidDelay AvoidDelay] on the Arduino site for more.
 
 ----
 
@@ -102,6 +109,8 @@ buttonObject.debounceTime = 20;   // debounce time set to 20 milliseconds
 
 
 == .multiclickTime ==
+<font color="#777777">(Yes, it's spelled like that, no capitalization on 'click'.. since I was thinking of 'multiclick' as one word. Might be a bit counterproductive, but for the time that's what it is)</font>
+
 Sets / gets the time limit for clicks.
 
 If you want to do multiple clicks (like a double click), you must do it within this time limit. Default is set to 250 ms (0.25 seconds).
