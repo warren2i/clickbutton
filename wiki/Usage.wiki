@@ -85,7 +85,7 @@ buttonClicks = buttonObject.clicks
 
 "Short" clicks is simply the number of button clicks within a set timelimit (the _.multiclickTime_ public variable. Default 250 ms, or 0.25 seconds).
 
-"Long" clicks absolute value is the number of clicks (including the last button hold-down). The preceding clicks are short clicks, only the _last_ click is held down for a longer time.
+"Long" clicks absolute value is the number of clicks (including the last button hold-down). The preceding clicks are short clicks, only the last click is held down for a longer time.
 
 A "click-and-hold" can be determined simply by getting a "long" click and then checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
 
