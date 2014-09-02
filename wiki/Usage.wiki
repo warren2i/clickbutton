@@ -81,13 +81,13 @@ buttonClicks = buttonObject.clicks
 === Returned click counts: ===
 
  * A <font color="0000FF">*positive*</font> number returns the number of short clicks.
- * A <font color="FF0000">*negative*</font> number indicates a long click (or possibly click-and-hold).
+ * A <font color="FF0000">*negative*</font> number indicates long clicks (or possibly click-and-hold).
 
 "Short" clicks is simply the number of button clicks within a set timelimit (the _.multiclickTime_ public variable. Default 250 ms, or 0.25 seconds).
 
-"Long" clicks absolute value is the number of clicks (including the last button hold-down). The preceding clicks are short clicks, only the last click is held down for a longer time.
+"Long clicks" are really just the last click that is held down for a "longer" time (Default 1 second). The preceding clicks, if present, are simply just short clicks. The returned absolute value is the number of clicks (including the last button hold-down). 
 
-A "click-and-hold" can be determined simply by getting a "long" click and then checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
+A "click-and-hold" can be determined simply by getting a "long click" and then checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
 
 
 
