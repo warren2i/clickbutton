@@ -24,11 +24,21 @@ where:
 
 ----
 
-= Avoid using delay()! =
+= Notes of notable warnings =
 
-It stops everything (except interrupts) that the Arduino does. Then the button timings may (most likely) gets messed up and will the library will not work as intended.
+== Avoid using delay()! ==
+
+It stops everything (except interrupts) that the Arduino does. Then the button timings may get delayed(!) too much, and the library will not work as intended.
+
+=== Also avoid using a "home-made" delay-without-delay kind of delay !! ===
+It doesn't really matter if you use the built-in {{{delay()}}} function, or if you make, say a _for_-loop, _while_-loop or similar, just wasting time and CPU cycles.. it's still a form of delay. In which case I'd say it's likely that you should rethink your "game engine" (or main() loop).
 
 Instead, have a look at [http://arduino.cc/en/Tutorial/BlinkWithoutDelay Blink without delay] and [http://playground.arduino.cc/Code/AvoidDelay AvoidDelay] on the Arduino site for more.
+
+
+== Avoid using it from inside interrupts ==
+By "it" I mean this library. ISR / Interrupts stops most other things in the micro-controller (Arduino), including the timer counter obtainable from the _millis()_ function. ClickButton is rather dependent on this timer..
+
 
 ----
 
@@ -70,14 +80,14 @@ buttonClicks = buttonObject.clicks
 
 === Returned click counts: ===
 
- * A positive number returns the number of short clicks.
- * A negative number indicates a long click (or possibly click-and-hold).
+ * A <font color="0000FF">*positive*</font> number returns the number of short clicks.
+ * A <font color="FF0000">*negative*</font> number indicates a long click (or possibly click-and-hold).
 
 "Short" clicks is simply the number of button clicks within a set timelimit (the _.multiclickTime_ public variable. Default 250 ms, or 0.25 seconds).
 
-"Long" clicks absolute value is the number of clicks (including the last button hold-down). The preceding clicks counted are short clicks, only the last click is held down for a longer time.
+"Long" clicks absolute value is the number of clicks (including the last button hold-down). The preceding clicks are short clicks, only the _last_ click is held down for a longer time.
 
-A "click-and-hold" can be determined simply by a "long" click and checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
+A "click-and-hold" can be determined simply by getting a "long" click and then checking that the button is still held down (via the _.depressed_ public variable. See the "LEDfader" example that comes with the library).
 
 
 
@@ -109,7 +119,7 @@ buttonObject.debounceTime = 20;   // debounce time set to 20 milliseconds
 
 
 == .multiclickTime ==
-<font color="#777777">(Yes, it's spelled like that, no capitalization on 'click'.. since I was thinking of 'multiclick' as one word. Might be a bit counterproductive, but for the time that's what it is)</font>
+<font color="#777777">(Yes, it's spelled like that, no capitalization on 'click'.. since I was thinking of 'multiclick' as one word. Might be a bit counterproductive, but for the time being that's what it is)</font>
 
 Sets / gets the time limit for clicks.
 
