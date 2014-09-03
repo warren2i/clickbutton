@@ -26,7 +26,9 @@ where:
 
 = Notes of notable warnings =
 
+<font color = "FF0000">
 == Avoid using delay()! ==
+</font>
 
 It stops everything (except interrupts) that the Arduino does. Then the button timings may get delayed(!) too much, and the library will not work as intended.
 
